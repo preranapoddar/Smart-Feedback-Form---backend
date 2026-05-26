@@ -4,6 +4,7 @@ import data.feedback.entity.Feedback;
 import data.feedback.model.FeedbackData;
 import data.feedback.repository.FeedbackRepository;
 import data.feedback.service.FeedbackService;
+import data.feedback.util.ValidatorUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ public class FeedbackController {
 
     @PostMapping("/submit")
     public ResponseEntity<FeedbackData> saveFeedback(@RequestBody FeedbackData request) {
+        if(request == null || !ValidatorUtil.isValidEmail(request.getEmail())) {
+            return ResponseEntity.badRequest().build();
+        }
         return new ResponseEntity(
                 feedbackService.submitFeedback(request), HttpStatus.OK);
     }
